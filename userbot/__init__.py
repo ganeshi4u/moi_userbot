@@ -52,6 +52,8 @@ if CONFIG_CHECK:
         "Please remove the line mentioned in the first hashtag from the config.env file")
     quit(1)
 
+USER_ID = os.environ.get("USER_ID", None)
+
 API_KEY = os.environ.get("API_KEY", None)
 
 API_HASH = os.environ.get("API_HASH", None)
@@ -127,6 +129,9 @@ def is_redis_alive():
     except:
         return False
 
+# Auto AFK vars
+AUTO_AFK = sb(os.environ.get("AUTO_AFK", False))
+AUTO_AFK_TIME = int(os.environ.get("AUTO_AFK_TIME", 30))
 
 # Global Variables
 COUNT_MSG = 0

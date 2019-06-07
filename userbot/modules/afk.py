@@ -50,7 +50,7 @@ async def mention_afk(mention):
                 USERS.update({mention.sender_id: 1})
                 COUNT_MSG = COUNT_MSG + 1
             elif mention.sender_id in USERS:
-                if USERS[mention.sender_id] == 5:
+                if USERS[mention.sender_id] == 5 or USERS[mention.sender_id] >= 16:
                     await mention.reply(
                         "Sorry! But i'm still not yet available."
                         "\nStop spamming me."
@@ -67,7 +67,7 @@ async def mention_afk(mention):
                     )
                     USERS[mention.sender_id] = USERS[mention.sender_id] + 1
                     COUNT_MSG = COUNT_MSG + 1
-                elif USERS[mention.sender_id] >= 15:
+                elif USERS[mention.sender_id] == 15:
                     await mention.reply(
                         "Alight that's it you're blocked!"
                         "\nHave a great day!"
@@ -117,8 +117,9 @@ async def afk_on_pm(e):
                 )
                 USERS.update({e.sender_id: 1})
                 COUNT_MSG = COUNT_MSG + 1
+
             elif e.sender_id in USERS:
-                if USERS[e.sender_id] % 5 == 0:
+                if USERS[e.sender_id] == 5 or USERS[e.sender_id] >= 16:
                     await e.reply(
                         "Sorry! But i'm still not yet available. "
                         "\nStop spamming me."
@@ -137,7 +138,7 @@ async def afk_on_pm(e):
                     )
                     USERS[e.sender_id] = USERS[e.sender_id] + 1
                     COUNT_MSG = COUNT_MSG + 1
-                elif USERS[e.sender_id] >= 15:
+                elif USERS[e.sender_id] == 15:
                     await e.reply(
                         "Alight that's it you're blocked!"
                         "\nHave a great day!"

@@ -6,6 +6,7 @@
 """ Userbot module which contains afk-related commands """
 
 import time
+import datetime
 
 from telethon.events import StopPropagation
 from userbot import (
@@ -15,12 +16,17 @@ from userbot import (
     COUNT_MSG,
     USERS,
     is_mongo_alive,
-    is_redis_alive)
+    is_redis_alive,
+    USER_ID,
+    AUTO_AFK,
+    AUTO_AFK_TIME)
 from userbot.events import register, errors_handler
 from userbot.modules.dbhelper import is_afk, afk, afk_reason, no_afk
 
 from telethon.tl.functions.contacts import BlockRequest
 from telethon.tl.functions.users import GetFullUserRequest
+from telethon.tl.types import UserStatusOnline
+from telethon.tl.types import UserStatusOffline
 
 @register(incoming=True, disable_edited=True)
 @errors_handler
@@ -232,6 +238,41 @@ async def type_afk_is_not_true(e):
         USERS = {}
         AFKREASON = "No Reason"
 
+@register(incoming=True)
+async def auto_afk(autoafk):
+    """ This sets your status to afk automatically when someone texts you after your specified AUTO_AFK_TIME from last seen """
+    if not is_redis_alive():
+        return
+    ISAFK = await is_afk()
+
+    if AUTO_AFK and ISAFK is False:
+        if (autoafk.message.mentioned and not (await autoafk.get_sender()).bot) or (autoafk.is_private and not (await autoafk.get_sender()).bot):
+            self_user_id = await autoafk.client(GetFullUserRequest(int(USER_ID)))
+            status = self_user_id.user.status
+            if isinstance(status, UserStatusOnline) or ISAFK is True:
+                return
+
+            last_seen = status.was_online if isinstance(status, UserStatusOffline) else None
+
+            if last_seen:
+                now = datetime.datetime.now(tz=datetime.timezone.utc)
+                diff = now - last_seen
+
+                if diff >= datetime.timedelta(minutes=AUTO_AFK_TIME):
+                    AFKREASON="auto afk on being inactive!"
+                    await afk(AFKREASON)
+                    
+                    if autoafk.message.mentioned:
+                        await mention_afk(autoafk)
+                    elif autoafk.is_private:
+                        await afk_on_pm(autoafk)
+
+                    if BOTLOG:
+                        await autoafk.client.send_message(
+                            BOTLOG_CHATID,
+                            "It's been " + str(diff) + " (H:mm:ss:ms) since your last online activity.\
+                            \nTriggered `auto afk`"
+                        )
 
 CMD_HELP.update({
     "afk": ".afk <reason>(optional)\

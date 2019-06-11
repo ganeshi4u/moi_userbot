@@ -11,7 +11,7 @@ import datetime
 from telethon.events import StopPropagation
 
 from userbot import (USER_ID, BOTLOG, BOTLOG_CHATID, CMD_HELP, COUNT_MSG, USERS, AUTO_AFK, AUTO_AFK_TIME,
-                     is_redis_alive, is_mongo_alive)
+                     AFK_IGNORE_CHATS, is_redis_alive, is_mongo_alive)
 
 from userbot.events import register
 from userbot.modules.dbhelper import afk, afk_reason, is_afk, no_afk
@@ -29,7 +29,7 @@ async def mention_afk(mention):
     if not is_redis_alive():
         return
     AFK = await is_afk()
-    if mention.message.mentioned and not (await mention.get_sender()).bot:
+    if mention.message.mentioned and not (await mention.get_sender()).bot and str(mention.chat_id) not in AFK_IGNORE_CHATS:
         if AFK is True:
             if mention.sender_id not in USERS:
                 await mention.reply(
@@ -186,7 +186,7 @@ async def type_afk_is_not_true(e):
     if not is_redis_alive():
         return
     ISAFK = await is_afk()
-    if ISAFK is True:
+    if ISAFK is True and str(e.chat_id) not in AFK_IGNORE_CHATS:
         await no_afk()
         x = await e.respond("I'm no longer AFK.")
         y = await e.respond(
@@ -250,9 +250,9 @@ async def auto_afk(autoafk):
                     AFKREASON="auto afk on being inactive!"
                     await afk(AFKREASON)
                     
-                    if autoafk.message.mentioned:
+                    if autoafk.message.mentioned and str(autoafk.chat_id) not in AFK_IGNORE_CHATS:
                         await mention_afk(autoafk)
-                    elif autoafk.is_private:
+                    elif autoafk.is_private and str(autoafk.chat_id) not in AFK_IGNORE_CHATS:
                         await afk_on_pm(autoafk)
 
                     if BOTLOG:

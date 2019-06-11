@@ -6,6 +6,8 @@
 """ Userbot initialization. """
 
 import os
+import re
+
 from distutils.util import strtobool as sb
 from logging import basicConfig, getLogger, INFO, DEBUG
 from sys import version_info
@@ -152,6 +154,8 @@ def is_redis_alive():
 # Auto AFK vars
 AUTO_AFK = sb(os.environ.get("AUTO_AFK", False))
 AUTO_AFK_TIME = int(os.environ.get("AUTO_AFK_TIME", 30))
+pattern = re.compile("^\s+|\s*,\s*|\s+$")
+AFK_IGNORE_CHATS = pattern.split(os.environ.get("AFK_IGNORE_CHATS", "0"))
 
 # Global Variables
 COUNT_MSG = 0

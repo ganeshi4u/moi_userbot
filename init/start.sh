@@ -6,4 +6,4 @@
 #
 
 redis-server --daemonize yes
-python3 -m userbot
+python3.6 -m userbot

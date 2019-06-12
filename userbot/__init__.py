@@ -19,6 +19,8 @@ from pymongo import MongoClient
 from requests import get
 from telethon import TelegramClient
 
+import urllib.parse
+
 load_dotenv("config.env")
 
 # Bot Logs setup:
@@ -72,6 +74,16 @@ CONSOLE_LOGGER_VERBOSE = sb(
 )
 
 MONGO_DB_URI = os.environ.get("MONGO_DB_URI", None)
+if MONGO_DB_URI != "":
+    try:
+        MONGO_DB_URI = MONGO_DB_URI.split("/test?", 1)[0]
+        MONGO_DB_PASS = MONGO_DB_URI.split(":", 2)[2]
+        MONGO_DB_PASS = MONGO_DB_PASS.rsplit("@", 1)[0]
+        MONGO_DB_PASS_PARSED = urllib.parse.quote_plus(MONGO_DB_PASS)
+        MONGO_DB_URI = MONGO_DB_URI.replace(MONGO_DB_PASS, MONGO_DB_PASS_PARSED, 1)
+    except IndexError:
+        LOGS.error(
+        "Something went wrong while trying to split password from uri")
 
 SCREENSHOT_LAYER_ACCESS_KEY = os.environ.get(
     "SCREENSHOT_LAYER_ACCESS_KEY", None

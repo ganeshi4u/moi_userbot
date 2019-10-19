@@ -44,8 +44,8 @@ async def mention_afk(mention):
         if AFK is True:
             if mention.sender_id not in USERS:
                 await mention.reply(
-                    "Sorry! I'm AFK due to ```" + await afk_reason() +
-                    "```\nI'll get back to you once i'm online 😉."
+                    "What? I'm ded due to ```" + await afk_reason() +
+                    "```\nI'll get back to you once i'm alive."
 		            "\n\n`This is an auto-generated reply by my bot`."
                 )
                 USERS.update({mention.sender_id: 1})
@@ -53,8 +53,8 @@ async def mention_afk(mention):
             elif mention.sender_id in USERS:
                 if USERS[mention.sender_id] == 5 or USERS[mention.sender_id] >= 16:
                     await mention.reply(
-                        "Sorry! But i'm still not yet available."
-                        "\nStop spamming me."
+                        "But i'm still ded."
+                        "\nStop spamming me smh."
                         "\nI'm busy with ```" + await afk_reason() +
 			            "\n\n`This is an auto-generated reply by my bot`."
                     )
@@ -63,15 +63,15 @@ async def mention_afk(mention):
                 elif USERS[mention.sender_id] == 10:
                     await mention.reply(
                         "This is my final warning!"
-                        "\nSTOP or i'll block you."
+                        "\nSTOP or i'll F u you."
 			            "\n\n`This is an auto-generated reply by my bot`."
                     )
                     USERS[mention.sender_id] = USERS[mention.sender_id] + 1
                     COUNT_MSG = COUNT_MSG + 1
                 elif USERS[mention.sender_id] == 15:
                     await mention.reply(
-                        "Alight that's it you're blocked!"
-                        "\nHave a great day!"
+                        "Enuf tard that's it you're blocked !"
+                        "\nDoi"
 			            "\n\n`This is an auto-generated reply by my bot`."
                     )
                     
